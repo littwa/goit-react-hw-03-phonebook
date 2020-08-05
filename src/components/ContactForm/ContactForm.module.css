@@ -1,0 +1,12 @@
+body {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+}
+.formcont {
+  border: 1px solid;
+  width: max-content;
+  padding: 40px 90px 40px 20px;
+}
+.fc {
+  display: block;
+  margin: 5px 0;
+}
