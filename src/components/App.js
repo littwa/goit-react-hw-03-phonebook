@@ -110,6 +110,7 @@ class App extends Component {
      >
       <Filter handleChangeFilter={this.handleChangeFilter} filter={this.state.filter} />
      </CSSTransition>
+
      <ContactList contacts={contactsArrayFiltered} deleteContact={this.deleteContact} />
     </div>
    </>
