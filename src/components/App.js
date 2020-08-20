@@ -1,13 +1,19 @@
 import React, { Component } from "react";
+import { CSSTransition } from "react-transition-group";
 import { v4 as uuidv4 } from "uuid";
 import ContactList from "./ContactList/ContactList";
 import ContactForm from "./ContactForm/ContactForm";
 import Filter from "./Filter/Filter";
+import IsAlreadyTrue from "./IsAlreadyTrue/IsAlreadyTrue";
+import animation from "./Appanimation.module.css";
+import animationIsAlready from "./IsAlreadyTrue/isAlreadyTrueAnimation.module.css";
+import FilterAnimation from "./Filter/FilterAnimation.module.css";
 
 class App extends Component {
  state = {
   contacts: [],
-  filter: ""
+  filter: "",
+  isAlready: false
  };
 
  componentDidMount() {
@@ -23,7 +29,7 @@ class App extends Component {
 
  addContact = (name, number) => {
   if (this.state.contacts.find(contact => name === contact.name)) {
-   alert(name + " is already in contacts");
+   this.setState({ isAlready: true });
    return;
   }
 
@@ -38,6 +44,10 @@ class App extends Component {
     contacts: [...prevState.contacts, contact]
    };
   });
+ };
+
+ changeIsAlready = () => {
+  this.setState({ isAlready: false });
  };
 
  handleChangeFilter = e => {
@@ -66,13 +76,40 @@ class App extends Component {
 
   return (
    <>
-    <div>
-     <h1>Phonebook</h1>
+    <CSSTransition
+     in={this.state.isAlready === true}
+     timeout={300}
+     classNames={animationIsAlready}
+     unmountOnExit
+    >
+     <IsAlreadyTrue onChangeIsAlready={this.changeIsAlready} />
+    </CSSTransition>
+
+    <div className={animation.container}>
+     <CSSTransition in={true} appear={true} timeout={1000} classNames={animation} unmountOnExit>
+      {stage => {
+       console.log(stage);
+       return (
+        <>
+         <h1 className={animation.title}>Phonebook</h1>
+         <CSSTransition in={stage === "entered"} timeout={300} classNames={animation} unmountOnExit>
+          <p className={animation.p}> &#9742;</p>
+         </CSSTransition>
+        </>
+       );
+      }}
+     </CSSTransition>
+
      <ContactForm addContact={this.addContact} />
-     <h2>Contacts</h2>
-     {this.state.contacts.length > 1 && (
+
+     <CSSTransition
+      in={this.state.contacts.length > 1}
+      timeout={300}
+      classNames={FilterAnimation}
+      unmountOnExit
+     >
       <Filter handleChangeFilter={this.handleChangeFilter} filter={this.state.filter} />
-     )}
+     </CSSTransition>
      <ContactList contacts={contactsArrayFiltered} deleteContact={this.deleteContact} />
     </div>
    </>
